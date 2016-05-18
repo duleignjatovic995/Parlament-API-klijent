@@ -10,6 +10,9 @@ import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
+
+import gui.models.PoslanikTableModel;
+
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
@@ -110,6 +113,8 @@ public class PoslanikGUI extends JFrame {
 	private JTable getTable() {
 		if (table == null) {
 			table = new JTable();
+			PoslanikTableModel tbm = new PoslanikTableModel();
+			table.setModel(tbm);
 		}
 		return table;
 	}
