@@ -10,11 +10,17 @@ import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.TableModel;
 
+import domen.Poslanik;
 import gui.models.PoslanikTableModel;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
+import java.awt.event.ActionEvent;
 
 public class PoslanikGUI extends JFrame {
 
@@ -29,21 +35,7 @@ public class PoslanikGUI extends JFrame {
 	private JScrollPane scpnStatus;
 	private JTextArea txtStatus;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PoslanikGUI frame = new PoslanikGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the frame.
@@ -64,7 +56,7 @@ public class PoslanikGUI extends JFrame {
 	private JPanel getJpnlButton() {
 		if (jpnlButton == null) {
 			jpnlButton = new JPanel();
-			jpnlButton.setPreferredSize(new Dimension(140, 10));
+			jpnlButton.setPreferredSize(new Dimension(160, 10));
 			jpnlButton.setLayout(null);
 			jpnlButton.add(getBtnGetMembers());
 			jpnlButton.add(getBtnFillTable());
@@ -85,21 +77,43 @@ public class PoslanikGUI extends JFrame {
 	private JButton getBtnGetMembers() {
 		if (btnGetMembers == null) {
 			btnGetMembers = new JButton("GET members");
-			btnGetMembers.setBounds(10, 11, 120, 23);
+			btnGetMembers.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					GUIKontroler.serializujGETRequest();
+					txtStatus.append("Poslanici uspesno preuzeti sa servisa.\n");
+				}
+			});
+			btnGetMembers.setBounds(10, 11, 140, 23);
 		}
 		return btnGetMembers;
 	}
 	private JButton getBtnFillTable() {
 		if (btnFillTable == null) {
 			btnFillTable = new JButton("Fill table");
-			btnFillTable.setBounds(10, 45, 120, 23);
+			btnFillTable.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					List<Poslanik> poslanici = GUIKontroler.vratiListuPoslanika(); 
+					PoslanikTableModel tbm = (PoslanikTableModel) table.getModel();
+					tbm.osveziTabelu(poslanici);
+					txtStatus.append("Tabela popunjena podacima.\n");
+				}
+			});
+			btnFillTable.setBounds(10, 45, 140, 23);
 		}
 		return btnFillTable;
 	}
 	private JButton getBtnUpdateMembers() {
 		if (btnUpdateMembers == null) {
 			btnUpdateMembers = new JButton("Update members");
-			btnUpdateMembers.setBounds(10, 79, 120, 23);
+			btnUpdateMembers.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					PoslanikTableModel tbm = (PoslanikTableModel) table.getModel();
+					List<Poslanik> poslanici = tbm.vratiListu();
+					GUIKontroler.serijalizujPromenu(poslanici);
+					txtStatus.append("Izmenjeni podaci su sacuvani.\n");
+				}
+			});
+			btnUpdateMembers.setBounds(10, 79, 140, 23);
 		}
 		return btnUpdateMembers;
 	}

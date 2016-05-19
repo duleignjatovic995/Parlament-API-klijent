@@ -13,6 +13,8 @@ import domen.Poslanik;
 
 public class PoslanikTableModel extends AbstractTableModel{
 
+
+	private static final long serialVersionUID = 1L;
 	private List<Poslanik> poslanici;
 	private static final String[] kolone = {"ID", "Name", "Last name", "Birth date"};
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.");
@@ -22,6 +24,9 @@ public class PoslanikTableModel extends AbstractTableModel{
 	}
 	
 	public PoslanikTableModel(List<Poslanik> poslanici) {
+		if (poslanici == null) {
+			this.poslanici = new LinkedList<>();
+		}
 		this.poslanici = poslanici;
 	}
 	
@@ -40,6 +45,7 @@ public class PoslanikTableModel extends AbstractTableModel{
 		return kolone[column];
 	}
 
+	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Poslanik p = poslanici.get(rowIndex);
@@ -51,7 +57,11 @@ public class PoslanikTableModel extends AbstractTableModel{
 		case 2:
 			return p.getPrezime();
 		case 3:
-			return p.getDatumRodjenja();
+			if (p.getDatumRodjenja() != null) {
+				return sdf.format(p.getDatumRodjenja());
+			}
+			return "";
+//			return p.getDatumRodjenja(); zasto vraca los format
 		default:
 			return "Error";
 		}
@@ -95,6 +105,14 @@ public class PoslanikTableModel extends AbstractTableModel{
 			break;
 		}
 	}
+	
+	public void osveziTabelu(List<Poslanik> lista){
+		this.poslanici = lista;
+		fireTableDataChanged();
+	}
 
+	public List<Poslanik> vratiListu(){
+		return this.poslanici;
+	}
 	
 }
